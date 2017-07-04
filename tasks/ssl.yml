@@ -1,0 +1,71 @@
+---
+# Takes care of the SSL configuration for NGINX
+
+- name: Check if the SSL dir exists
+  stat:
+    path: "{{ nginx_ssl_dir }}"
+  register: ssl_dir_check
+  become: yes
+  when:
+    - nginx_enable_ssl_backend
+  tags:
+    - config
+
+- name: Create the SSL dir if doesnt exit
+  file:
+    path: "{{ nginx_ssl_dir }}"
+    state: directory
+    owner: root
+    group: root
+  when:
+    - nginx_enable_ssl_backend
+    - not ssl_dir_check.stat.exists
+  tags:
+    - config
+  become: yes
+
+
+- name: Check if self-signed certificate exists
+  stat:
+    path: "{{ nginx_ssl_dir }}/{{ ansible_hostname }}.key"
+  register: signed_key_exists
+  become: yes
+  when:
+    - nginx_enable_ssl_backend
+  tags:
+    - config
+
+- name: Generate self-signed certificate
+  shell: >-
+    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509
+    -subj "/C={{ ssl_country_code }}/ST={{ ssl_state_name }}/L={{ ssl_city_name }}/O={{ ssl_organization }}/CN={{ ssl_cn }}"
+    -keyout {{ nginx_ssl_dir }}/{{ ssl_key_name  }}.key
+    -out {{ nginx_ssl_dir }}/{{ ssl_cert_name }}.cert
+  when:
+    - nginx_enable_ssl_backend
+    - not signed_key_exists.stat.exists
+  become: yes
+  register: local_key_generated
+  tags:
+    - config
+
+
+- name: Check if the DH key exists
+  stat:
+    path: "{{ nginx_ssl_dir }}/dhkey.pem"
+  register: dh_key_exists
+  become: yes
+  when:
+    - nginx_generate_dhkey
+  tags:
+    - config
+
+- name: Generate DH key
+  shell: >-
+    openssl dhparam -out {{ dhkey_path}} {{ dhkey_bits }}
+  when:
+    - nginx_generate_dhkey
+    - not dh_key_exists.stat.exists
+  tags:
+    - config
+  become: yes

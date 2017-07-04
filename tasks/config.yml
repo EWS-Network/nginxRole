@@ -1,0 +1,33 @@
+---
+# Tasks that would run on Linux OS regardless
+
+- name: Check if NGINX enabled directory exists
+  stat:
+    path: "{{ nginx_vhost_enabled_dir }}"
+  become: yes
+  tags:
+    - config
+  register: enabled_exists
+
+- name: Create NGINX enabled directory
+  file:
+    path: "{{ nginx_vhost_enabled_dir }}"
+    state: directory
+  become: yes
+  tags:
+    - config
+  when:
+    - not "{{ enabled_exits.exists}}"
+
+- name: Configure NGINX core configuration file
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_root_config_dir }}/{{ nginx_root_config_file }}"
+  become: yes
+  tags:
+    - config
+
+- name: SSL Local Configuration
+  include: ssl.yml
+  tags:
+    - config

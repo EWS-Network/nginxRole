@@ -1,0 +1,26 @@
+---
+# Defaults for NGINX
+
+nginx_root_config_dir: /etc/nginx
+nginx_root_config_file: nginx.conf
+
+nginx_ssl_dir: "{{ nginx_root_config_dir }}/ssl"
+
+nginx_enable_ssl_backend: False
+nginx_generate_dhkey: False
+
+ssl_country_code: GB
+ssl_state_name: London
+ssl_city_name: London
+ssl_organization: EWS
+ssl_cn: "{{ ansible_hostname }}"
+
+ssl_cert_name: "{{ ansible_hostname }}"
+ssl_key_name: "{{ ansible_hostname }}"
+
+
+dhkey_path: "{{ nginx_ssl_dir }}/dhkey.pem"
+dhkey_bits: 2048
+
+nginx_vhost_config_dir: "{{ nginx_root_config_dir  }}/conf.d"
+nginx_vhost_enabled_dir: "{{ nginx_root_config_dir }}/enabled.d"

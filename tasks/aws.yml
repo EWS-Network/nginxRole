@@ -1,0 +1,27 @@
+---
+# Install and configure the root of NGINX
+
+- name: EC2 facts
+  ec2_facts:
+  tags:
+    - preinstall
+
+- name: Install NGINX from AWS Repos
+  yum:
+    name: nginx
+    state: latest
+    disablerepo: epel
+  tags:
+    - preinstall
+  become: yes
+  register: nginx_install
+
+- name: Stop NGINX
+  service:
+    name: nginx
+    state: stopped
+  when:
+    - not nginx_install|changed
+  tags:
+    - install
+  become: yes
