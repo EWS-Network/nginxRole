@@ -2,7 +2,7 @@
 # Install and configure the root of NGINX
 
 
-- name: Install NGINX from AWS Repos
+- name: Install NGINX
   apt:
     name: nginx
     state: latest
@@ -11,7 +11,7 @@
   become: yes
   register: nginx_install
 
-- name: Stop NGINX
+- name: Stop NGINX if not installed already
   service:
     name: nginx
     state: stopped

@@ -17,7 +17,7 @@
   tags:
     - config
   when:
-    - not "{{ enabled_exits.exists}}"
+    - not enabled_exists.stat.exists
 
 - name: Configure NGINX core configuration file
   template:
