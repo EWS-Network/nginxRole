@@ -5,7 +5,7 @@
   include: aws.yml
   become: yes
   when:
-    - "{{ ansible_distribution == 'Amazon' }}"
+    - ansible_distribution == 'Amazon'
   tags:
     - packages
     - install
@@ -15,7 +15,7 @@
   include: ubuntu.yml
   become: yes
   when:
-    - "{{ ansible_distribution == 'Ubuntu' }}"
+    - ansible_distribution == 'Ubuntu'
   tags:
     - packages
     - install

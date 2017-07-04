@@ -6,7 +6,6 @@
   apt:
     name: nginx
     state: latest
-    disablerepo: epel
   tags:
     - preinstall
   become: yes
