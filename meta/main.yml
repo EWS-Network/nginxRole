@@ -2,6 +2,13 @@ galaxy_info:
   author: John Preston [JMille]
   description: Small role for NGINX
   license: GPLv3
+  platforms:
+    - name: EL
+      verions:
+        - 7
+    - name: Amazon
+      versions:
+        - all
 
   min_ansible_version: 2.1
 
